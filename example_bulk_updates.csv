@@ -1,0 +1,7 @@
+item_id,field_name,value
+PVTI_kwExampleProjectID001,Status,Done
+PVTI_kwExampleProjectID002,Status,In Progress
+PVTI_kwExampleProjectID003,Priority,High
+PVTI_kwExampleProjectID004,Priority,Medium
+PVTI_kwExampleProjectID005,Story Points,5
+PVTI_kwExampleProjectID006,Story Points,3

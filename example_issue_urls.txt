@@ -1,0 +1,12 @@
+# Example issue URLs for bulk adding to GitHub Projects
+# Format: One URL per line, comments starting with # are ignored
+
+https://github.com/owner/example-repo/issues/1
+https://github.com/owner/example-repo/issues/2
+https://github.com/owner/example-repo/issues/3
+https://github.com/owner/example-repo/issues/4
+https://github.com/owner/example-repo/issues/5
+
+# Pull requests are also supported
+https://github.com/owner/example-repo/pull/1
+https://github.com/owner/example-repo/pull/2
