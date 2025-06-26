@@ -25,12 +25,24 @@ gh auth refresh -s project
 # List your projects
 gh project list
 
-# Add issue to project
+# Add issue to project (1 = project number, not project ID)
 gh project item-add 1 --owner "@me" --url https://github.com/owner/repo/issues/23
 
-# Update project item status
+# Update project item status (requires project ID, not project number)
 gh project item-edit --id <item-id> --field-id <field-id> --project-id <project-id> --single-select-option-id <option-id>
 ```
+
+## Key Parameter Types
+
+**Project Number vs Project ID:**
+
+- **Project Number** (`1`, `2`, etc.) - Human-readable number from GitHub UI URLs
+  - Used in: `gh project item-add`, `gh project view`, `gh project list`
+  - Example: `https://github.com/users/username/projects/1` → use `1`
+
+- **Project ID** (`PVT_kwXXXXXX`) - GitHub's internal identifier  
+  - Used in: `gh project item-edit`, GraphQL mutations
+  - Get with: `gh project view 1 --owner "@me" --format json | jq '.id'`
 
 ## Why Use Projects Over Plain Issues
 
