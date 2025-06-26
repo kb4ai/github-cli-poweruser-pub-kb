@@ -15,10 +15,10 @@ Quick reference for all automation scripts in this toolkit.
 ./github-projects-item-management.sh remove-item 1 "@me" ITEM_ID
 
 # List all project items
-./github-projects-item-management.sh list-items 1 "@me" --format json
+./github-projects-item-management.sh list-items 1 "@me" json
 
 # Bulk add issues from file
-./github-projects-item-management.sh bulk-add-issues 1 "@me" example_issue_urls.txt
+./github-projects-item-management.sh bulk-add 1 "@me" example_issue_urls.txt
 ```
 
 ### `github-projects-field-discovery.sh`
@@ -29,10 +29,10 @@ Quick reference for all automation scripts in this toolkit.
 ./github-projects-field-discovery.sh list-fields 1 "@me"
 
 # Export project schema
-./github-projects-field-discovery.sh export-schema 1 "@me" --format json
+./github-projects-field-discovery.sh export-schema 1 "@me" json
 
 # Get specific field details
-./github-projects-field-discovery.sh get-field 1 "@me" "Status"
+./github-projects-field-discovery.sh get-field-details 1 "@me" "Status"
 ```
 
 ### `github-projects-field-management.sh`
@@ -46,10 +46,10 @@ Quick reference for all automation scripts in this toolkit.
 ./github-projects-field-management.sh set-field-by-id 1 "@me" ITEM_ID FIELD_ID OPTION_ID
 
 # Bulk update from CSV
-./github-projects-field-management.sh bulk-update-from-csv 1 "@me" example_bulk_updates.csv
+./github-projects-field-management.sh bulk-update 1 "@me" example_bulk_updates.csv
 
 # Clear field value
-./github-projects-field-management.sh clear-field 1 "@me" ITEM_ID "Priority"
+./github-projects-field-management.sh clear-field-value 1 "@me" ITEM_ID "Priority"
 ```
 
 ## 🔗 Sub-Issues Scripts
@@ -65,7 +65,7 @@ Quick reference for all automation scripts in this toolkit.
 ./github-sub-issues-query.sh get-parent owner/repo 456
 
 # Show hierarchy
-./github-sub-issues-query.sh show-hierarchy owner/repo 123 --format tree
+./github-sub-issues-query.sh show-hierarchy owner/repo 123 --verbose
 ```
 
 ### `github-sub-issues-crud.sh`
@@ -92,11 +92,11 @@ Quick reference for all automation scripts in this toolkit.
 
 ```bash
 # All project operations in Python
-python3 github_projects_automation.py list-items --project 1 --owner "@me"
-python3 github_projects_automation.py add-issue --project 1 --owner "@me" --url "https://github.com/owner/repo/issues/123"
+python3 github_projects_automation.py list-items 1 "@me"
+python3 github_projects_automation.py add-issue 1 "@me" "https://github.com/owner/repo/issues/123"
 
 # Enhanced logging and progress tracking
-python3 github_projects_automation.py bulk-add --project 1 --owner "@me" --file example_issue_urls.txt --verbose
+python3 github_projects_automation.py bulk-update 1 "@me" example_bulk_updates.csv --verbose
 ```
 
 ### `github_sub_issues.py`
@@ -127,16 +127,16 @@ All scripts support multiple output formats:
 
 ```bash
 # Table format (default, human-readable)
-./script.sh command --format table
+./script.sh command table
 
 # JSON format (machine-readable)
-./script.sh command --format json
+./script.sh command json
 
 # CSV format (spreadsheet integration) 
-./script.sh command --format csv
+./script.sh command csv
 
 # Markdown format (documentation)
-./script.sh command --format markdown
+./script.sh command markdown
 ```
 
 ## 🛠️ Common Options
@@ -146,7 +146,7 @@ All scripts support these standard options:
 - `--help` - Show detailed usage information
 - `--verbose` - Enable detailed logging
 - `--dry-run` - Preview changes without executing
-- `--format FORMAT` - Output format (table/json/csv/markdown)
+- `[format]` - Output format as positional parameter (table/json/csv/markdown)
 - `--output FILE` - Save output to file
 
 ## 🚨 Error Handling
