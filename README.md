@@ -20,6 +20,8 @@ gh auth login --scopes "project"
 ### Quick Start Guides
 - **[Getting Started](GETTING-STARTED.md)** - Setup and first steps
 - **[Scripts Reference](SCRIPTS-REFERENCE.md)** - Command reference for all scripts
+- **[Command Reference](COMMAND-REFERENCE.md)** - Complete command syntax and options
+- **[User Stories](USER-STORIES.md)** - Practical workflow examples and use cases
 - **[Production Guide](PRODUCTION-GUIDE.md)** - Deployment best practices
 - **[Features](FEATURES.md)** - Implemented and tested features
 - **[Roadmap](ROADMAP.md)** - Development milestones and future considerations
@@ -77,6 +79,58 @@ Based on testing and development experience:
 - Bash 4.0+ or Python 3.7+
 - GitHub Personal Access Token with project permissions
 
+## 🚨 Troubleshooting
+
+### Common Issues & Solutions
+
+**Authentication Problems**
+
+```bash
+# Re-authenticate with correct scopes
+gh auth login --scopes "project"
+
+# Verify authentication
+gh auth status
+```
+
+**Permission Errors**
+
+- Ensure you have write access to the project/repository
+- Check that you're using the correct owner/organization name
+- Verify project number exists: `gh project list --owner @me`
+
+**Command Not Found**
+
+```bash
+# Make scripts executable
+chmod +x *.sh
+
+# Check script location
+ls -la github-projects-*.sh
+```
+
+**API Rate Limits**
+
+```bash
+# Check current rate limits
+gh api rate_limit
+
+# Add delays between bulk operations
+./script.sh command --verbose  # Monitor rate limit usage
+```
+
+**Field/Item Not Found**
+
+```bash
+# List available fields
+./github-projects-field-discovery.sh list-fields 1 "@me"
+
+# List project items with IDs
+./github-projects-item-management.sh list-items 1 "@me" csv
+```
+
+For detailed troubleshooting and debugging tips, see [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md#-error-handling).
+
 ## 🔗 Technical Reports
 
 - **[Projects Report](GITHUB_PROJECTS_AUTOMATION_REPORT.md)** - Technical implementation details
@@ -94,9 +148,10 @@ Scripts support multiple output formats:
 ## 🚦 Getting Started
 
 1. **Setup**: Follow [Getting Started Guide](GETTING-STARTED.md)
-2. **Reference**: Check [Scripts Reference](SCRIPTS-REFERENCE.md) for all commands
-3. **Deploy**: See [Production Guide](PRODUCTION-GUIDE.md) for deployment considerations
-4. **Integrate**: Adapt scripts for your workflows
+2. **Commands**: See [Command Reference](COMMAND-REFERENCE.md) for complete syntax
+3. **Workflows**: Check [User Stories](USER-STORIES.md) for practical examples
+4. **Deploy**: See [Production Guide](PRODUCTION-GUIDE.md) for deployment considerations
+5. **Integrate**: Adapt scripts for your workflows
 
 ---
 
