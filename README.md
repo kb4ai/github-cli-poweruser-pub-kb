@@ -29,6 +29,7 @@ gh auth login --scopes "project"
 ### Core Features
 - **[GitHub Projects](github-projects-overview.md)** - Projects v2 automation overview
 - **[GitHub Sub-Issues](github-sub-issues/)** - Native hierarchical issue management
+- **[PR Comments Management](github-pr-comments-edit-vs-reply-guide.md)** - Edit vs Reply comment operations
 - **[Labels Management](labels-management-automation.md)** - Automated label operations
 
 ### Detailed Guides
@@ -39,6 +40,11 @@ gh auth login --scopes "project"
 ### API Integration
 - **[CLI/API Examples](github-cli-api-code-snippets-samples-examples/)** - GraphQL and REST examples
 
+### PR Comment Management
+- **[Edit vs Reply Guide](github-pr-comments-edit-vs-reply-guide.md)** - **CRITICAL**: Understanding edit vs reply operations
+- **[PR Comments API Guide](github-pr-review-comments-api-guide.md)** - Complete API reference
+- **[PR Comments Scripts](github-pr-review-comments-scripts/)** - Automated comment management tools
+
 ## 🛠️ Tools
 
 ### Executable Scripts
@@ -47,6 +53,12 @@ gh auth login --scopes "project"
 - `github-projects-field-management.sh` - Field value operations
 - `github-sub-issues-query.sh` - Sub-issue relationships (read)
 - `github-sub-issues-crud.sh` - Sub-issue relationships (write)
+
+### PR Comment Management Scripts
+- `github-pr-review-comments-scripts/edit-comment.sh` - **EDIT** existing comment content
+- `github-pr-review-comments-scripts/reply-to-comment.sh` - **REPLY** to comments (create new)
+- `github-pr-review-comments-scripts/filtered-comment-reader.sh` - Advanced comment filtering
+- `github-pr-review-comments-scripts/comment-exporter.sh` - Export comments to multiple formats
 
 ### Python Alternatives
 - `github_projects_automation.py` - Complete Python implementation
@@ -58,6 +70,7 @@ gh auth login --scopes "project"
 |---------|-------------|--------|
 | **Projects v2** | Issues ↔ Projects, field management | ✅ Tested |
 | **Sub-Issues** | Parent-child relationships (beta API) | ✅ Tested |
+| **PR Comments** | Edit existing vs Reply to comments | ✅ Implemented |
 | **Custom Fields** | Status, Priority field automation | ✅ Tested |
 | **Bulk Operations** | CSV workflows, batch processing | ✅ Tested |
 | **Error Handling** | Retry logic, validation | ✅ Implemented |
@@ -70,6 +83,7 @@ Based on testing and development experience:
 - **Bulk issue management** - Validated CSV import/export operations  
 - **Custom field automation** - Status, Priority field management tested
 - **Sub-issues workflows** - Hierarchical issue relationship management
+- **PR comment management** - Edit vs reply operations with safety validations
 
 **Need a feature?** Please [request it](../../issues) - we're happy to extend based on real use cases!
 
