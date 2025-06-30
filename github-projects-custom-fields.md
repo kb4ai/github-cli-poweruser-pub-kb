@@ -1,5 +1,25 @@
 # GitHub Projects - Custom Fields Management
 
+## ⚠️ CRITICAL: Authentication Required
+
+**Before working with custom fields, ensure you have a CLASSIC personal access token:**
+
+```bash
+# REQUIRED: Use classic token (fine-grained tokens don't work)
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
+# Test field access works
+gh project field-list 1 --owner @me
+```
+
+**Token Requirements:**
+
+- ✅ **Classic Personal Access Token** with `project` scope  
+- ❌ **Fine-grained Personal Access Token** (causes empty API responses)
+
+**If you see empty field lists or null values, you're using a fine-grained token instead of a classic token.**
+
 ## Understanding Custom Fields
 
 GitHub Projects v2 separates issue data from project metadata. Custom fields exist only in the project context and enable:
@@ -54,6 +74,10 @@ gh project field-create 1 --owner "@me" --name "Due Date" --data-type "date"
 ### Get Required IDs First
 ```bash
 #!/bin/bash
+# Authentication: Use classic token (required for Projects v2 API)
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
 PROJECT_NUM="1"
 OWNER="@me"
 

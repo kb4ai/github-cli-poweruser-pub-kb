@@ -227,7 +227,20 @@ echo
 # Step 8: Authentication setup instructions
 echo -e "${YELLOW}Step 8: Authentication setup required...${NC}"
 
-echo -e "${BLUE}8.1 To use these scripts with real data:${NC}"
+echo -e "${BLUE}8.1 ⚠️ CRITICAL: Use CLASSIC tokens only${NC}"
+echo "  ${RED}❌ Fine-grained personal access tokens do NOT work with Projects v2 API${NC}"
+echo "  ${GREEN}✅ Classic personal access tokens work perfectly${NC}"
+echo
+
+echo -e "${BLUE}8.2 Recommended setup (classic token):${NC}"
+echo "  1. Create CLASSIC token at: https://github.com/settings/tokens"
+echo "  2. Click 'Generate new token (classic)'"
+echo "  3. Include scopes: read:project, project"
+echo "  4. Configure ${GITHUB_TOKEN_DOTFILE} with GITHUB_PERSONAL_ACCESS_TOKEN"
+echo "  5. Source file: ${YELLOW}source \"${GITHUB_TOKEN_DOTFILE}\" && export GH_TOKEN=\"\$GITHUB_PERSONAL_ACCESS_TOKEN\"${NC}"
+
+echo
+echo -e "${BLUE}8.3 Alternative CLI authentication (may not work reliably):${NC}"
 echo "  1. Set up GitHub CLI authentication:"
 echo "     ${YELLOW}gh auth login --scopes project${NC}"
 echo
@@ -236,12 +249,6 @@ echo "     ${YELLOW}gh auth refresh -s project --hostname github.com${NC}"
 echo
 echo "  3. Verify project access:"
 echo "     ${YELLOW}gh project view 1 --owner example-org${NC}"
-
-echo
-echo -e "${BLUE}8.2 Alternative token setup:${NC}"
-echo "  1. Create token at: https://github.com/settings/tokens"
-echo "  2. Include scopes: read:project, project"
-echo "  3. Set environment variable: export GITHUB_TOKEN=your_token"
 
 echo
 

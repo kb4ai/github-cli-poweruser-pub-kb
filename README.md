@@ -5,11 +5,32 @@
 
 Collection of tested scripts and examples for automating GitHub workflows using GitHub CLI and GraphQL API. Built from real-world usage and experimentation.
 
+## ⚠️ CRITICAL: Authentication Requirements
+
+**GitHub Projects v2 API requires CLASSIC personal access tokens with 'project' scope.**
+
+**❌ Fine-grained personal access tokens (new tokens) do NOT work with Projects v2 API**  
+**✅ Classic personal access tokens from ${GITHUB_TOKEN_DOTFILE} work perfectly**
+
+### Quick Setup
+
+```bash
+# Option 1: Use classic token environment file (RECOMMENDED)
+source "${GITHUB_TOKEN_DOTFILE}"
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
+# Option 2: Interactive authentication (may not set project scopes correctly)
+gh auth login --scopes "project"
+
+# Test authentication works
+gh project list --owner @me
+```
+
 ## 🚀 Quick Start
 
 ```bash
-# Authentication setup
-gh auth login --scopes "project"
+# Authentication setup (use classic token)
+source "${GITHUB_TOKEN_DOTFILE}" && export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
 
 # Test basic functionality
 ./github-projects-item-management.sh --help
@@ -91,21 +112,47 @@ Based on testing and development experience:
 
 - GitHub CLI (`gh`) with project scope
 - Bash 4.0+ or Python 3.7+
-- GitHub Personal Access Token with project permissions
+- **GitHub Classic Personal Access Token with project permissions** (⚠️ Fine-grained tokens do NOT work)
 
 ## 🚨 Troubleshooting
 
 ### Common Issues & Solutions
 
+**❌ Empty/Null Projects API Responses**
+
+This is the most common issue - caused by using fine-grained tokens instead of classic tokens:
+
+```bash
+# WRONG: Fine-grained token (causes empty responses)
+source "${GITHUB_TOKEN_DOTFILE}.finegrained"  # Example of problematic token
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+gh project list --owner @me  # Returns empty
+
+# CORRECT: Classic token 
+source "${GITHUB_TOKEN_DOTFILE}"
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN" 
+gh project list --owner @me  # Works perfectly
+```
+
 **Authentication Problems**
 
 ```bash
-# Re-authenticate with correct scopes
+# Use classic token (REQUIRED for Projects v2)
+source "${GITHUB_TOKEN_DOTFILE}"
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
+# Alternative: Re-authenticate with correct scopes (may not work reliably)
 gh auth login --scopes "project"
 
 # Verify authentication
 gh auth status
 ```
+
+**Token Type Issues**
+
+- **Classic Personal Access Tokens**: ✅ Work with Projects v2 API
+- **Fine-grained Personal Access Tokens**: ❌ Do NOT work (return empty responses)
+- **GitHub CLI auth**: ❌ May not set project scopes correctly
 
 **Permission Errors**
 

@@ -13,7 +13,8 @@
 #
 # Requirements:
 # - GitHub CLI (gh) with authentication
-# - read:project and project scopes
+# - CLASSIC personal access token with read:project and project scopes
+# - ⚠️ Fine-grained tokens (new tokens) do NOT work with Projects v2 API
 # - jq for JSON processing
 #
 
@@ -91,15 +92,27 @@ retry_command() {
 
 # Validate GitHub CLI authentication and scopes
 validate_auth() {
-    if ! gh auth status >/dev/null 2>&1; then
-        error_exit "GitHub CLI not authenticated. Please run: gh auth login --scopes project"
+    # Check for classic token file (recommended)
+    local token_file="${GITHUB_TOKEN_DOTFILE}"
+    if [ -f "$token_file" ]; then
+        info "Using classic token from configured file"
+        source "$token_file"
+        export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+    elif ! gh auth status >/dev/null 2>&1; then
+        error_exit "GitHub CLI not authenticated and no classic token found. 
+RECOMMENDED: Create classic token at https://github.com/settings/tokens
+Configure ${GITHUB_TOKEN_DOTFILE} with GITHUB_PERSONAL_ACCESS_TOKEN
+ALTERNATIVE: gh auth login --scopes project (may not work reliably)"
     fi
     
-    # Check for project scope
-    if ! gh auth status 2>&1 | grep -q "project\|read:project"; then
-        warning "Project scope may not be available. Consider running: gh auth refresh -s project --hostname github.com"
-        info "You may need to manually authorize project access at: https://github.com/settings/tokens"
+    # Test project access with null response detection
+    if ! gh project list --owner @me >/dev/null 2>&1; then
+        error_exit "Cannot access projects - likely using fine-grained token
+❌ Fine-grained tokens cause empty/null API responses
+✅ Use classic token: https://github.com/settings/tokens (use 'Tokens (classic)')"
     fi
+    
+    log "SUCCESS: Project authentication validated"
 }
 
 # Get project ID from project number and owner
@@ -118,7 +131,10 @@ get_project_id() {
     fi
     
     if [ -z "$project_id" ] || [ "$project_id" = "null" ]; then
-        error_exit "Could not find project $project_num for owner $owner"
+        error_exit "Could not find project $project_num for owner $owner
+Most common cause: Using fine-grained token instead of classic token
+⚠️ CRITICAL: Use classic token from \${GITHUB_TOKEN_DOTFILE}
+Create at: https://github.com/settings/tokens (use 'Tokens (classic)')"
     fi
     
     echo "$project_id"

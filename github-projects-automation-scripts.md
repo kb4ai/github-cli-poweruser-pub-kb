@@ -1,5 +1,31 @@
 # GitHub Projects - Production Automation Scripts
 
+## ⚠️ CRITICAL: Authentication Requirements
+
+**All scripts in this document require CLASSIC personal access tokens with 'project' scope.**
+
+**❌ Fine-grained personal access tokens (new tokens) do NOT work with Projects v2 API**  
+**✅ Classic personal access tokens from ${GITHUB_TOKEN_DOTFILE} work perfectly**
+
+### Authentication Setup Required
+
+Before running any automation scripts, ensure you have proper authentication:
+
+```bash
+# Create classic token at: https://github.com/settings/tokens
+# Select 'Generate new token (classic)'
+# Enable scopes: project, read:project, repo
+
+# Configure ${GITHUB_TOKEN_DOTFILE} with GITHUB_PERSONAL_ACCESS_TOKEN
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
+# Test authentication
+gh project list --owner @me
+```
+
+**If you see empty responses or null values, you're using a fine-grained token instead of a classic token.**
+
 ## Complete Project Management Scripts
 
 ### 1. Issue Lifecycle Automation
@@ -8,6 +34,16 @@
 # issue-project-workflow.sh - Complete issue to project automation
 
 set -e
+
+# CRITICAL: Use classic token (fine-grained tokens don't work)
+if [ ! -f ${GITHUB_TOKEN_DOTFILE} ]; then
+    echo "❌ Error: ${GITHUB_TOKEN_DOTFILE} file not found"
+    echo "Create classic token at: https://github.com/settings/tokens"
+    exit 1
+fi
+
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
 
 PROJECT_NUM="${1:-1}"
 OWNER="${2:-@me}"
@@ -430,17 +466,28 @@ retry_command() {
 
 # Validate GitHub CLI authentication
 validate_auth() {
-    if ! gh auth status >/dev/null 2>&1; then
-        log "ERROR: GitHub CLI not authenticated"
-        echo "Please run: gh auth login --scopes project"
+    # Check for classic token file (recommended)
+    if [ -f ${GITHUB_TOKEN_DOTFILE} ]; then
+        log "INFO: Using classic token from configured file"
+        source ${GITHUB_TOKEN_DOTFILE}
+        export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+    elif ! gh auth status >/dev/null 2>&1; then
+        log "ERROR: GitHub CLI not authenticated and no classic token found"
+        echo "RECOMMENDED: Create classic token at https://github.com/settings/tokens"
+        echo "Configure ${GITHUB_TOKEN_DOTFILE} with GITHUB_PERSONAL_ACCESS_TOKEN"
+        echo "ALTERNATIVE: gh auth login --scopes project (may not work reliably)"
         exit 1
     fi
     
-    # Check project scope
-    if ! gh auth status 2>&1 | grep -q "project"; then
-        log "WARNING: Project scope may not be available"
-        echo "Consider running: gh auth refresh -s project"
+    # Test project access with null response detection
+    if ! gh project list --owner @me >/dev/null 2>&1; then
+        log "ERROR: Cannot access projects - likely using fine-grained token"
+        echo "❌ Fine-grained tokens cause empty/null API responses"
+        echo "✅ Use classic token: https://github.com/settings/tokens"
+        exit 1
     fi
+    
+    log "SUCCESS: Project authentication validated"
 }
 
 # Safe field operations with validation
@@ -562,10 +609,26 @@ main "$@"
 
 ## Key Production Considerations
 
-1. **Error Handling** - All scripts include retry logic and proper error checking
-2. **Logging** - Comprehensive logging for debugging and audit trails  
-3. **Authentication** - Validation of GitHub CLI authentication and scopes
+1. **Authentication** - ⚠️ **CRITICAL**: Use classic personal access tokens only
+   - ❌ Fine-grained tokens cause empty/null API responses
+   - ✅ Classic tokens work perfectly with Projects v2 API
+   - All scripts include validation for correct token types
+2. **Error Handling** - All scripts include retry logic and proper error checking
+3. **Logging** - Comprehensive logging for debugging and audit trails  
 4. **Rate Limiting** - Built-in delays and retry mechanisms
 5. **Field Validation** - Check field existence before operations
 6. **Batch Processing** - Efficient handling of bulk operations
 7. **Configuration** - Parameterized scripts for different environments
+
+### Authentication Troubleshooting
+
+**Empty Project Responses**: Usually indicates fine-grained token usage
+```bash
+# WRONG: Fine-grained token
+source "${GITHUB_TOKEN_DOTFILE}"
+gh project list --owner @me  # Returns empty
+
+# CORRECT: Classic token
+source ${GITHUB_TOKEN_DOTFILE}  
+gh project list --owner @me  # Shows projects
+```

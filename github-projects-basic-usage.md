@@ -1,5 +1,28 @@
 # GitHub Projects - Basic CLI Usage
 
+## ⚠️ CRITICAL: Authentication Setup First
+
+**Before using any of these commands, ensure you have a CLASSIC personal access token:**
+
+```bash
+# REQUIRED: Use classic token (fine-grained tokens don't work)
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
+# Test authentication works
+gh project list --owner @me
+```
+
+**If you see empty responses or null values, you're likely using a fine-grained token instead of a classic token.**
+
+**Token Requirements:**
+
+- ✅ **Classic Personal Access Token** with `project` scope
+- ❌ **Fine-grained Personal Access Token** (causes empty API responses)
+- ❌ **GitHub CLI auth** (may not set project scopes correctly)
+
+**Create classic token at:** https://github.com/settings/tokens (use "Tokens (classic)")
+
 ## Project Discovery
 
 ```bash
@@ -71,6 +94,10 @@ echo "Issue created and added to project with item ID: $ITEM_ID"
 ### Bulk Issue Addition
 ```bash
 #!/bin/bash
+# Authentication: Use classic token (required for Projects v2 API)
+source ${GITHUB_TOKEN_DOTFILE}
+export GH_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+
 PROJECT_NUM="1"
 REPO="owner/repo"
 
